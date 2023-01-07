@@ -53,6 +53,12 @@ const App = () => {
     }
   }
 
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedNoteappUser')
+    window.location.reload();
+  }
+
   if (user === null) {
     return (
       <>
@@ -88,6 +94,7 @@ const App = () => {
 
   return (
     <div>
+      <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
       <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
