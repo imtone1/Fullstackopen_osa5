@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Addblog from './components/Addblog'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './services/login'
@@ -10,6 +11,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+  
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -59,6 +64,33 @@ const App = () => {
     window.location.reload();
   }
 
+  const addBlog = async (event) => {
+    event.preventDefault()
+
+    const blogObject={
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+
+    }
+
+    await blogService.create(blogObject)
+    window.location.reload()
+
+  }
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+   
+  }
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+  }
+
   if (user === null) {
     return (
       <>
@@ -94,8 +126,10 @@ const App = () => {
 
   return (
     <div>
-      <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
       <h2>blogs</h2>
+      <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
+      <Addblog addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange}/>
+      
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
