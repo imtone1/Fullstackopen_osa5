@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Addblog from './components/Addblog'
 import Blog from './components/Blog'
+import Message from './components/Message'
 import blogService from './services/blogs'
 import Login from './services/login'
 import loginService from './services/login'
@@ -10,7 +11,8 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [kind, setKind] = useState(null)
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -51,9 +53,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setMessage('wrong username or password')
+      setKind('errormessage')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null) ; setKind(null)
       }, 5000)
     }
   }
@@ -61,12 +64,12 @@ const App = () => {
   const handleLogout = async (event) => {
     event.preventDefault()
     window.localStorage.removeItem('loggedNoteappUser')
-    window.location.reload();
+    window.location.reload()
   }
 
   const addBlog = async (event) => {
     event.preventDefault()
-
+    try {
     const blogObject={
       title: newTitle,
       author: newAuthor,
@@ -75,7 +78,19 @@ const App = () => {
     }
 
     await blogService.create(blogObject)
-    window.location.reload()
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+    setMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+    setKind('successmessage')
+    setTimeout(()=>{setMessage(null) ; setKind(null) ; window.location.reload()},5000)}
+    catch{
+      setMessage('something went wrong')
+      setKind('errormessage')
+      setTimeout(() => {
+        setMessage(null) ; setKind(null)
+      }, 5000)
+    }
 
   }
   const handleTitleChange = (event) => {
@@ -97,6 +112,7 @@ const App = () => {
    {/* <Login handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword}/> */}
    <div>
         <h2>Log in to application</h2>
+        <Message message={message} kind={kind}/>
     <form onSubmit={handleLogin}>
     <div>
       username
@@ -119,7 +135,6 @@ const App = () => {
     <button type="submit">login</button>
   </form>  
   </div>
-   <div>{errorMessage}</div>
    </>
     )
   }
@@ -128,6 +143,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
+      <Message message={message} kind={kind}/>
       <Addblog addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange}/>
       
       {blogs.map(blog =>

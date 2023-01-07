@@ -1,7 +1,7 @@
 const Addblog = ({addBlog, newTitle ,handleTitleChange,newAuthor,handleAuthorChange,newUrl, handleUrlChange}) => (
-    <div >
+    <div style={{width:100, marginBottom:20}}>
     <h2>create new</h2>
-    <form onSubmit={addBlog} style={{width:100, marginBottom:20}}>
+    <form onSubmit={addBlog}>
        <label htmlFor="title">Title
       <input id="title"
         value={newTitle}

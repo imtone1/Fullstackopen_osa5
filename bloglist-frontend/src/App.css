@@ -1,0 +1,19 @@
+.errormessage{
+    color: red;
+    font-size: 20px;
+    background-color: grey;
+    border-color: red;
+    border-style: solid;
+    border-width: thick;
+    padding: 5px;
+}
+
+.successmessage{
+    color: green;
+    font-size: 20px;
+    background-color: grey;
+    border-color: green;
+    padding: 5px;
+    border-style: solid;
+    border-width: thick;
+}
