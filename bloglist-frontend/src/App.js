@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 import Addblog from './components/Addblog'
 import Blog from './components/Blog'
 import Message from './components/Message'
+import Login from './components/Login'
 import blogService from './services/blogs'
-import Login from './services/login'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -105,36 +106,20 @@ const App = () => {
   const handleUrlChange = (event) => {
     setNewUrl(event.target.value)
   }
+  const handleUserChange = (event) => {
+    setUsername(event.target.value)
+  }
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
 
   if (user === null) {
     return (
       <>
-   {/* <Login handleLogin={handleLogin} username={username} password={password} setUsername={setUsername} setPassword={setPassword}/> */}
-   <div>
-        <h2>Log in to application</h2>
-        <Message message={message} kind={kind}/>
-    <form onSubmit={handleLogin}>
-    <div>
-      username
-        <input
-        type="text"
-        value={username}
-        name="Username"
-        onChange={({ target }) => setUsername(target.value)}
-      />
-    </div>
-    <div>
-      password
-        <input
-        type="password"
-        value={password}
-        name="Password"
-        onChange={({ target }) => setPassword(target.value)}
-      />
-    </div>
-    <button type="submit">login</button>
-  </form>  
-  </div>
+      <Togglable buttonLabel='login'>
+   <Message message={message} kind={kind}/>
+   <Login handleLogin={handleLogin} username={username} password={password} handleUserChange={handleUserChange} handlePasswordChange={handlePasswordChange} />
+  </Togglable>
    </>
     )
   }
@@ -143,12 +128,14 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
+      <Togglable buttonLabel='new blog'>
       <Message message={message} kind={kind}/>
       <Addblog addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange}/>
-      
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
+      
     </div>
   )
 }
