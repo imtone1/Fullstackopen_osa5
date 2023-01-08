@@ -14,9 +14,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [kind, setKind] = useState(null)
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  
   
 
   useEffect(() => {
@@ -68,23 +66,16 @@ const App = () => {
     window.location.reload()
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    try {
-    const blogObject={
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
+  const addBlog = async (blogObject) => {
+     try {
+  
 
-    }
 
     await blogService.create(blogObject)
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
-    setMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+    setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
     setKind('successmessage')
-    setTimeout(()=>{setMessage(null) ; setKind(null) ; window.location.reload()},5000)}
+    setTimeout(()=>{setMessage(null) ; setKind(null) ; window.location.reload()},5000)
+}
     catch{
       setMessage('something went wrong')
       setKind('errormessage')
@@ -94,18 +85,7 @@ const App = () => {
     }
 
   }
-  const handleTitleChange = (event) => {
-    setNewTitle(event.target.value)
-   
-  }
 
-  const handleAuthorChange = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleUrlChange = (event) => {
-    setNewUrl(event.target.value)
-  }
   const handleUserChange = (event) => {
     setUsername(event.target.value)
   }
@@ -130,7 +110,7 @@ const App = () => {
       <p>{user.name} logged in </p> <button onClick={handleLogout}>Logout</button>
       <Togglable buttonLabel='new blog'>
       <Message message={message} kind={kind}/>
-      <Addblog addBlog={addBlog} newTitle={newTitle} handleTitleChange={handleTitleChange} newAuthor={newAuthor} handleAuthorChange={handleAuthorChange} newUrl={newUrl} handleUrlChange={handleUrlChange}/>
+      <Addblog createBlog={addBlog} />
       </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
